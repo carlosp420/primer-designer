@@ -22,6 +22,7 @@ Primer designer
 .. |coveralls| image:: https://coveralls.io/repos/carlosp420/primer-designer/badge.svg?branch=master&service=github
     :alt: Coverage Status
     :target: https://coveralls.io/r/carlosp420/primer-designer
+
 .. |version| image:: https://img.shields.io/pypi/v/primer_designer.svg?style=flat
     :alt: PyPI Package latest release
     :target: https://pypi.python.org/pypi/primer_designer
