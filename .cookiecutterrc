@@ -1,0 +1,34 @@
+# This file exists so you can easily regenerate your project.
+#
+# Unfortunately cookiecutter can't use this right away so
+# you have to copy this file to ~/.cookiecutterrc
+
+default_context:
+
+    appveyor:                  'no'
+    c_extension_optional:      'no'
+    c_extension_support:       'no'
+    codacy:                    'no'
+    codeclimate:               'no'
+    codecov:                   'no'
+    command_line_interface:    'plain'
+    coveralls:                 'yes'
+    distribution_name:         'primer_designer'
+    email:                     'mycalesis@gmail.com'
+    full_name:                 'Carlos Peña'
+    github_username:           'carlosp420'
+    landscape:                 'no'
+    package_name:              'primer-designer'
+    project_name:              'Designs primers from a FASTA file using primers4clades website'
+    project_short_description: 'Primer designer'
+    release_date:              '2015-10-06'
+    repo_name:                 'primer-designer'
+    requiresio:                'yes'
+    scrutinizer:               'yes'
+    sphinx_theme:              'readthedocs'
+    test_matrix_configurator:  'no'
+    test_runner:               'nose'
+    travis:                    'yes'
+    version:                   '0.0.0'
+    website:                   'http://mycalesis.me'
+    year:                      '2015'
