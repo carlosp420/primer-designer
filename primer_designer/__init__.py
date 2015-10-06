@@ -1,4 +1,4 @@
-from __main__ import PrimerDesigner
+from .designer import PrimerDesigner
 
 
 __version__ = "0.0.0"
