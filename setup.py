@@ -17,7 +17,6 @@ def read(*names, **kwargs):
     ).read()
 
 
-
 setup(
     name='primer_designer',
     version='0.0.0',

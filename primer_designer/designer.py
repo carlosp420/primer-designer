@@ -39,7 +39,7 @@ class PrimerDesigner:
         >>> pd = PrimerDesigner()
         >>> pd.folder = "alignments"   # folder containing the FASTA file alignments
         >>> pd.tm = "55"               # annealing temperature
-        >>> pd.min_amplength = "250"   # minimium amplicon length
+        >>> pd.min_amplength = "250"   # minimum amplicon length
         >>> pd.max_amplength = "500"   # maximum amplicon length
         >>> pd.gencode = "universal"   # see below for all available genetic codes
         >>> pd.mode  = "primers"
