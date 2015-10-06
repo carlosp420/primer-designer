@@ -8,22 +8,26 @@ from Bio.Seq import Seq
 from Bio.SeqIO import SeqRecord
 from Bio import SeqIO
 
+from .utils import is_fasta
+
 
 class PrimerDesigner:
     """Class for designing primers from FASTA files.
 
     It will send a FASTA alignment to `primers4clades`_ in order to design
-    degenerate primers. Input data needed:
-    * Alignment in FASTA format containing at least 4 sequences.
+    degenerate primers. Input data needed is an alignment in FASTA format
+    containing at least 4 sequences.
+    It is recommended that the beginning of each FASTA sequence description
+    contains the taxon name between square brackets.
 
     Parameters:
         folder (str):         path of folder containing the FASTA file alignments
         tm (str):             temperature
-        min_amplength (str):  minimium amplicon length
+        min_amplength (str):  minimum amplicon length
         max_amplength (str):  maximum amplicon length
         gencode (str):        genetic code. See below for all available genetic
                               codes
-        clustype (str):       cluster type
+        clustype (str):       cluster distance metric: ``dna``, ``protein``.
         amptype (str):        substitution model used to estimate phylogenetic
                               information
         email (str):          your email address so that primer4clades can send
@@ -114,8 +118,7 @@ class PrimerDesigner:
 
                 primers = []
                 for aln in alns:
-                    # match only files ending in .FAS[TA]
-                    if re.search("fas[ta]*$", aln, re.I):
+                    if is_fasta(aln):
                         print("\nProcessing file \"%s\"" % aln)
                         files = {'sequencefile': open(aln, 'rb')}
                         r = requests.post(url, files=files, data=params)
