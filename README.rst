@@ -5,18 +5,11 @@ Primer designer
 .. list-table::
     :stub-columns: 1
 
-    * - docs
-      - |docs|
     * - tests
-      - | |travis| |requires|
-        | |coveralls|
-        | |scrutinizer|
+      - | |travis| |requires| |coveralls|
+        | |quantified_code|
     * - package
-      - |version| |downloads| |wheel| |supported-versions| |supported-implementations|
-
-.. |docs| image:: https://readthedocs.org/projects/primer-designer/badge/?style=flat
-    :target: https://readthedocs.org/projects/primer-designer
-    :alt: Documentation Status
+      - |version| |wheel| |supported_versions| |supported_implementations|
 
 .. |travis| image:: https://travis-ci.org/carlosp420/primer-designer.svg?branch=master
     :alt: Travis-CI Build Status
@@ -33,25 +26,21 @@ Primer designer
     :alt: PyPI Package latest release
     :target: https://pypi.python.org/pypi/primer_designer
 
-.. |downloads| image:: https://img.shields.io/pypi/dm/primer_designer.svg?style=flat
-    :alt: PyPI Package monthly downloads
-    :target: https://pypi.python.org/pypi/primer_designer
+.. |quantified_code| image:: https://www.quantifiedcode.com/api/v1/project/23f9326bf0484aebb952f2d821969436/badge.svg
+    :target: https://www.quantifiedcode.com/app/project/23f9326bf0484aebb952f2d821969436
+    :alt: Code issues
 
 .. |wheel| image:: https://img.shields.io/pypi/wheel/primer_designer.svg?style=flat
     :alt: PyPI Wheel
     :target: https://pypi.python.org/pypi/primer_designer
 
-.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/primer_designer.svg?style=flat
+.. |supported_versions| image:: https://img.shields.io/pypi/pyversions/primer_designer.svg?style=flat
     :alt: Supported versions
     :target: https://pypi.python.org/pypi/primer_designer
 
-.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/primer_designer.svg?style=flat
+.. |supported_implementations| image:: https://img.shields.io/pypi/implementation/primer_designer.svg?style=flat
     :alt: Supported implementations
     :target: https://pypi.python.org/pypi/primer_designer
-
-.. |scrutinizer| image:: https://img.shields.io/scrutinizer/g/carlosp420/primer-designer/master.svg?style=flat
-    :alt: Scrutinizer Status
-    :target: https://scrutinizer-ci.com/g/carlosp420/primer-designer/
 
 Designs primers from a FASTA file using primers4clades website
 
