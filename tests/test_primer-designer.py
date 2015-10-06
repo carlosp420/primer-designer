@@ -1,5 +1,5 @@
 
-from primer-designer.__main__ import main
+from primer_designer.__main__ import main
 
 
 def test_main():

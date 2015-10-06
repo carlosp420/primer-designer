@@ -1,6 +1,6 @@
-==============================================================
-Designs primers from a FASTA file using primers4clades website
-==============================================================
+===============
+Primer designer
+===============
 
 .. list-table::
     :stub-columns: 1
@@ -53,7 +53,7 @@ Designs primers from a FASTA file using primers4clades website
     :alt: Scrutinizer Status
     :target: https://scrutinizer-ci.com/g/carlosp420/primer-designer/
 
-Primer designer
+Designs primers from a FASTA file using primers4clades website
 
 * Free software: BSD license
 
