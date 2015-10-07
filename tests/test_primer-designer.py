@@ -45,5 +45,5 @@ class PrimerDesignerTest(unittest.TestCase):
 
     def test_process_response(self):
         self.pd.process_response(ALIGNMENT, open(RESPONSE).read())
-        self.assertIn('gayaaytaygahytdaargaagaaytdggvaargghgc',
-                      [str(seq.seq) for seq in self.pd.designed_primers])
+        self.assertTrue('gayaaytaygahytdaargaagaaytdggvaargghgc' in
+                        [str(seq.seq) for seq in self.pd.designed_primers])
