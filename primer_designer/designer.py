@@ -103,25 +103,16 @@ class PrimerDesigner:
 
     def design_primers(self):
         if os.path.exists(self.folder):
-            # are there alignments/files in that folder?
             all_files = os.path.join(self.folder, "*")
             alns = glob.glob(all_files)
 
             if len(alns) > 0:
-                url = "http://floresta.eead.csic.es/primers4clades/primers4clades.cgi"
-                params = {
-                    'tm': self.tm, 'min_amplength': self.min_amplength,
-                    'max_amplength': self.max_amplength, 'mode': self.mode,
-                    'gencode': self.gencode, 'clustype': self.clustype,
-                    'email': self.email,
-                }
-
                 primers = []
                 for aln in alns:
                     if is_fasta(aln):
                         print("\nProcessing file \"%s\"" % aln)
-                        files = {'sequencefile': open(aln, 'rb')}
-                        r = requests.post(url, files=files, data=params)
+
+                        r = self.request_primers(aln)
 
                         this_file = os.path.split(aln)[1]
                         this_file = re.sub(".fas.*", "", this_file)
@@ -161,9 +152,21 @@ class PrimerDesigner:
                 # Write primers to alignment file
                 SeqIO.write(primers, "primers.fasta", "fasta")
                 print("\nDone.\nAll primers have been saved in the file \"primers.fasta\"")
-
+                return primers
             else:
                 print("\nError! the folder {0} is empty.\n".format(self.folder))
 
         else:
             print("\nError! the folder {0} does not exist.\n".format(self.folder))
+
+    def request_primers(self, aln):
+        url = "http://floresta.eead.csic.es/primers4clades/primers4clades.cgi"
+        params = {
+            'tm': self.tm, 'min_amplength': self.min_amplength,
+            'max_amplength': self.max_amplength, 'mode': self.mode,
+            'gencode': self.gencode, 'clustype': self.clustype,
+            'email': self.email,
+        }
+        files = {'sequencefile': open(aln, 'rb')}
+        r = requests.post(url, files=files, data=params)
+        return r
