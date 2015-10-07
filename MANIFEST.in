@@ -6,8 +6,9 @@ include .bumpversion.cfg
 include .coveragerc
 include .isort.cfg
 include .pylintrc
-include requirements.txt
 include Makefile
+include *.txt
+recursive-include requirements *.txt
 
 include AUTHORS.rst
 include CHANGELOG.rst

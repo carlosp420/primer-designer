@@ -100,6 +100,7 @@ class PrimerDesigner:
         self.clustype = clustype
         self.amptype = amptype
         self.email = email
+        self.designed_primers = []
 
     def design_primers(self):
         if os.path.exists(self.folder):
@@ -107,57 +108,53 @@ class PrimerDesigner:
             alns = glob.glob(all_files)
 
             if len(alns) > 0:
-                primers = []
                 for aln in alns:
                     if is_fasta(aln):
                         print("\nProcessing file \"%s\"" % aln)
 
                         r = self.request_primers(aln)
-
-                        this_file = os.path.split(aln)[1]
-                        this_file = re.sub(".fas.*", "", this_file)
-
-                        # Save result to file
-                        to_print = "Writing detailed results as file \""
-                        to_print += str(aln) + ".html\""
-                        print(to_print)
-
-                        f = open(str(aln) + ".html", "w")
-                        f.write(r.text)
-                        f.close()
-
-                        # Show primer pair to user
-                        html_file = r.text.split("\n")
-                        i = 1
-                        for line in html_file:
-                            if "degen_corr" in line:
-                                seq = line.split(" ")[0].strip()
-
-                                description = line.split(" ")[2].strip()
-
-                                this_id = this_file + "_" + line.split(" ")[1].strip()
-                                this_id += "_" + str(i)
-
-                                seq = Seq(seq, IUPAC.ambiguous_dna)
-                                seq_record = SeqRecord(seq)
-                                seq_record.id = this_id
-                                seq_record.description = description
-                                primers.append(seq_record)
-                                i = int(i)
-                                i = i + 1
-
-                            if i == 3:
-                                break
+                        self.process_response(aln, r.text)
 
                 # Write primers to alignment file
-                SeqIO.write(primers, "primers.fasta", "fasta")
+                SeqIO.write(self.designed_primers, "primers.fasta", "fasta")
                 print("\nDone.\nAll primers have been saved in the file \"primers.fasta\"")
-                return primers
+                return self.designed_primers
             else:
                 print("\nError! the folder {0} is empty.\n".format(self.folder))
-
         else:
             print("\nError! the folder {0} does not exist.\n".format(self.folder))
+
+    def process_response(self, aln, response_body):
+        this_file = os.path.split(aln)[1]
+        this_file = re.sub(".fas.*", "", this_file)
+        # Save result to file
+        to_print = "Writing detailed results as file \""
+        to_print += str(aln) + ".html\""
+        print(to_print)
+        f = open(str(aln) + ".html", "w")
+        f.write(response_body)
+        f.close()
+        # Show primer pair to user
+        html_file = response_body.split("\n")
+        i = 1
+        for line in html_file:
+            if "degen_corr" in line:
+                seq = line.split(" ")[0].strip()
+
+                description = line.split(" ")[2].strip()
+
+                this_id = this_file + "_" + line.split(" ")[1].strip()
+                this_id += "_" + str(i)
+
+                seq = Seq(seq, IUPAC.ambiguous_dna)
+                seq_record = SeqRecord(seq)
+                seq_record.id = this_id
+                seq_record.description = description
+                self.designed_primers.append(seq_record)
+                i = int(i)
+                i = i + 1
+            if i == 3:
+                break
 
     def request_primers(self, aln):
         url = "http://floresta.eead.csic.es/primers4clades/primers4clades.cgi"
