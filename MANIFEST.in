@@ -11,7 +11,7 @@ include *.txt
 recursive-include requirements *.txt
 
 include AUTHORS.rst
-include CHANGELOG.rst
+include HISTORY.rst
 include CONTRIBUTING.rst
 include LICENSE
 include README.rst

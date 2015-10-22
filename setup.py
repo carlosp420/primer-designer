@@ -22,7 +22,7 @@ setup(
     version='0.0.0',
     license='BSD',
     description='Primer designer',
-    long_description='%s\n%s' % (read('README.rst'), re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))),
+    long_description='%s\n%s' % (read('README.rst'), re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('HISTORY.rst'))),
     author='Carlos Peña',
     author_email='mycalesis@gmail.com',
     url='https://github.com/carlosp420/primer-designer',
