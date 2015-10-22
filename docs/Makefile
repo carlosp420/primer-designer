@@ -49,6 +49,7 @@ help:
 	@echo "  coverage   to run coverage check of the documentation (if enabled)"
 
 clean:
+	rm -rf primer_designer.rst modules.rst
 	rm -rf $(BUILDDIR)/*
 
 html:

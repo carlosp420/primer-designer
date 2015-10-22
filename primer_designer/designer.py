@@ -21,19 +21,25 @@ class PrimerDesigner:
     contains the taxon name between square brackets.
 
     Parameters:
-        folder (str):         path of folder containing the FASTA file alignments
-        tm (str):             temperature
-        min_amplength (str):  minimum amplicon length
-        max_amplength (str):  maximum amplicon length
-        gencode (str):        genetic code. See below for all available genetic
-                              codes
-        clustype (str):       cluster distance metric: ``dna``, ``protein``.
-        amptype (str):        substitution model used to estimate phylogenetic
-                              information
-        email (str):          your email address so that primer4clades can send
-                              you email with detailed results
+
+        folder (str):                path of folder containing the FASTA file alignments
+        taxon_for_codon_usage (str): optional taxon name that will be inserted in the
+                                     description of FASTA sequences between square
+                                     brackets so that can be used by primer4clades
+                                     to infer the codon table to use
+        tm (str):                    temperature
+        min_amplength (str):         minimum amplicon length
+        max_amplength (str):         maximum amplicon length
+        gencode (str):               genetic code. See below for all available genetic
+                                     codes
+        clustype (str):              cluster distance metric: ``dna``, ``protein``.
+        amptype (str):               substitution model used to estimate phylogenetic
+                                     information
+        email (str):                 your email address so that primer4clades can send
+                                     you email with detailed results
 
     Example:
+
         >>> # The values shown are the default. Change them if needed.
         >>> from primer_designer import PrimerDesigner
         >>> pd = PrimerDesigner()
@@ -53,6 +59,7 @@ class PrimerDesigner:
     you also get the results by email. primers4clades_ will send you one email
     for each alignment.
     The genetic code table (variable ``gencode``) can be any of the following:
+
         * ``universal`` for standard
         * ``2`` for vertebrate mitochondrial
         * ``3`` for yeast mitochondrial
@@ -73,6 +80,7 @@ class PrimerDesigner:
 
     The evolutionary substitution model can be any of the following (variable
     ``amptype``):
+
         * ``protein_WAGG``  for protein WAG+G
         * ``protein_JTTG``  for protein JTT+G
         * ``protein_Blosum62G``  for protein Blosum62+G
@@ -88,10 +96,11 @@ class PrimerDesigner:
     .. _primers4clades: http://floresta.eead.csic.es/primers4clades/#0
     """
 
-    def __init__(self, folder=None, tm="55", min_amplength="100",
-                 max_amplength="500", gencode="universal", mode="primers",
-                 clustype="dna", amptype="dna_GTR", email=None):
+    def __init__(self, folder=None, taxon_for_codon_usage=None, tm="55",
+                 min_amplength="100", max_amplength="500", gencode="universal",
+                 mode="primers", clustype="dna", amptype="dna_GTR", email=None):
         self.folder = folder
+        self.taxon_for_codon_usage = taxon_for_codon_usage
         self.tm = tm
         self.min_amplength = min_amplength
         self.max_amplength = max_amplength
@@ -110,6 +119,10 @@ class PrimerDesigner:
             if alns:
                 for aln in alns:
                     if is_fasta(aln):
+
+                        if self.taxon_for_codon_usage:
+                            aln = self.insert_taxon_in_new_fasta_file(aln)
+
                         print("\nProcessing file \"{0}\"".format(aln))
 
                         r = self.request_primers(aln)
@@ -123,6 +136,29 @@ class PrimerDesigner:
                 print("\nError! the folder {0} is empty.\n".format(self.folder))
         else:
             print("\nError! the folder {0} does not exist.\n".format(self.folder))
+
+    def insert_taxon_in_new_fasta_file(self, aln):
+        """primer4clades infers the codon usage table from the taxon names in the
+        sequences.
+
+        These names need to be enclosed by square brackets and be
+        present in the description of the FASTA sequence. The position is not
+        important. I will insert the names in the description in a new FASTA
+        file.
+
+        Returns:
+            Filename of modified FASTA file that includes the name of the taxon.
+        """
+        new_seq_records = []
+        for seq_record in SeqIO.parse(aln, 'fasta'):
+            new_seq_record_id = "[{0}] {1}".format(self.taxon_for_codon_usage, seq_record.id)
+            new_seq_record = SeqRecord(seq_record.seq, id=new_seq_record_id)
+            new_seq_records.append(new_seq_record)
+
+        base_filename = os.path.splitext(aln)
+        new_filename = '{0}_modified{1}'.format(base_filename[0], base_filename[1])
+        SeqIO.write(new_seq_records, new_filename, "fasta")
+        return new_filename
 
     def process_response(self, aln, response_body):
         this_file = os.path.split(aln)[1]
