@@ -24,7 +24,7 @@ project = 'Designs primers from a FASTA file using primers4clades website'
 year = '2015'
 author = 'Carlos Peña'
 copyright = '{0}, {1}'.format(year, author)
-version = release = '0.0.0'
+version = release = '0.0.1'
 # on_rtd is whether we are on readthedocs.org
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
