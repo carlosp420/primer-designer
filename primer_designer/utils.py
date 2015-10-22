@@ -2,7 +2,7 @@ import re
 
 
 def is_fasta(filename):
-    """Check if filename is fasta based on extension
+    """Check if filename is FASTA based on extension
 
     Return:
        Boolean

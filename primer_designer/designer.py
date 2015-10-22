@@ -107,10 +107,10 @@ class PrimerDesigner:
             all_files = os.path.join(self.folder, "*")
             alns = glob.glob(all_files)
 
-            if len(alns) > 0:
+            if alns:
                 for aln in alns:
                     if is_fasta(aln):
-                        print("\nProcessing file \"%s\"" % aln)
+                        print("\nProcessing file \"{0}\"".format(aln))
 
                         r = self.request_primers(aln)
                         self.process_response(aln, r.text)
@@ -127,41 +127,42 @@ class PrimerDesigner:
     def process_response(self, aln, response_body):
         this_file = os.path.split(aln)[1]
         this_file = re.sub(".fas.*", "", this_file)
-        # Save result to file
-        to_print = "Writing detailed results as file \""
-        to_print += str(aln) + ".html\""
-        print(to_print)
-        f = open(str(aln) + ".html", "w")
-        f.write(response_body)
-        f.close()
+
+        msg = 'Writing detailed results as file "{0}.html"'.format(aln)
+        print(msg)
+
+        with open("{0}.html".format(aln), "w") as handle:
+            handle.write(response_body)
+
         # Show primer pair to user
         html_file = response_body.split("\n")
         i = 1
-        for line in html_file:
-            if "degen_corr" in line:
-                seq = line.split(" ")[0].strip()
+        while i < 4:
+            for line in html_file:
+                if "degen_corr" in line:
+                    seq = line.split(" ")[0].strip()
 
-                description = line.split(" ")[2].strip()
+                    description = line.split(" ")[2].strip()
 
-                this_id = this_file + "_" + line.split(" ")[1].strip()
-                this_id += "_" + str(i)
+                    this_id = this_file + "_" + line.split(" ")[1].strip()
+                    this_id += "_" + str(i)
 
-                seq = Seq(seq, IUPAC.ambiguous_dna)
-                seq_record = SeqRecord(seq)
-                seq_record.id = this_id
-                seq_record.description = description
-                self.designed_primers.append(seq_record)
-                i = int(i)
-                i = i + 1
-            if i == 3:
-                break
+                    seq = Seq(seq, IUPAC.ambiguous_dna)
+                    seq_record = SeqRecord(seq)
+                    seq_record.id = this_id
+                    seq_record.description = description
+                    self.designed_primers.append(seq_record)
+                    i += 1
 
     def request_primers(self, aln):
         url = "http://floresta.eead.csic.es/primers4clades/primers4clades.cgi"
         params = {
-            'tm': self.tm, 'min_amplength': self.min_amplength,
-            'max_amplength': self.max_amplength, 'mode': self.mode,
-            'gencode': self.gencode, 'clustype': self.clustype,
+            'tm': self.tm,
+            'min_amplength': self.min_amplength,
+            'max_amplength': self.max_amplength,
+            'mode': self.mode,
+            'gencode': self.gencode,
+            'clustype': self.clustype,
             'email': self.email,
         }
         files = {'sequencefile': open(aln, 'rb')}
