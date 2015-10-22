@@ -1,6 +1,11 @@
 Release History
 ---------------
 
+0.1.0 (2015-10-22)
+++++++++++++++++++
+
+- Add taxon name to description of FASTA seqs if given by user.
+
 0.0.1 (2015-10-22)
 ++++++++++++++++++
 

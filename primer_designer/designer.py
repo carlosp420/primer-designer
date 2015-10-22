@@ -53,6 +53,12 @@ class PrimerDesigner:
         >>> pd.amptype = "dna_GTRG"    # substitution model used to estimate phylogenetic information
         >>> pd.email = "youremail@email.com"   # primer4clades will send you an email with very detailed results
         >>> pd.design_primers()
+        >>>
+        >>> # You can input a taxon name to include in the description of every
+        >>> # FASTA sequence so that primer4clades can infer the correct codon
+        >>> # table to apply to the analysis.
+        >>> pd.taxon_for_codon_usage = "Bombyx mori"
+        >>> pd.design_primers()
 
     The best primer pairs will be printed to your screen. Detailed results will
     be saved as HTML files in your alignments folder. But it is recommended if

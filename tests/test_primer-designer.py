@@ -1,5 +1,7 @@
 import os
 import unittest
+
+from Bio import SeqIO
 import responses
 
 from primer_designer import PrimerDesigner
@@ -47,3 +49,13 @@ class PrimerDesignerTest(unittest.TestCase):
         self.pd.process_response(ALIGNMENT, open(RESPONSE).read())
         self.assertTrue('gayaaytaygahytdaargaagaaytdggvaargghgc' in
                         [str(seq.seq) for seq in self.pd.designed_primers])
+
+    def test_inserting_taxon_in_fasta_seq_descriptions(self):
+        self.pd.taxon_for_codon_usage = 'Bombyx mori'
+        modified_seq = self.pd.insert_taxon_in_new_fasta_file(os.path.join(TEST_FOLDER, 'Ca3.fst'))
+        for seq_record in SeqIO.parse(modified_seq, 'fasta'):
+            print(seq_record.description)
+            self.assertTrue("Bombyx mori]" in seq_record.description)
+
+        if os.path.isfile(modified_seq):
+            os.remove(modified_seq)
