@@ -51,8 +51,8 @@ setup(
     ],
     install_requires=[
         # eg: 'aspectlib==1.1.1', 'six>=1.7',
-        'requests==2.8.0',
-        'biopython==1.65',
+        'requests==2.8.1',
+        'biopython==1.66',
     ],
     extras_require={
         # eg:
