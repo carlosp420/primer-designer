@@ -20,7 +20,7 @@ if os.getenv('SPELLCHECK'):
 
 source_suffix = '.rst'
 master_doc = 'index'
-project = 'Designs primers from a FASTA file using primers4clades website'
+project = 'primer-designer'
 year = '2015'
 author = 'Carlos Peña'
 copyright = '{0}, {1}'.format(year, author)

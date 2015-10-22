@@ -1,5 +1,5 @@
-Welcome to Designs primers from a FASTA file using primers4clades website's documentation!
-============================================================================================
+Welcome to primer-designer
+==========================
 
 Contents:
 
@@ -12,7 +12,7 @@ Contents:
    reference/index
    contributing
    authors
-   changelog
+   history
 
 Indices and tables
 ==================
