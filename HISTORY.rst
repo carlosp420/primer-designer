@@ -1,6 +1,12 @@
 Release History
 ---------------
 
+0.1.1 (2015-10-23)
+++++++++++++++++++
+
+- Fixed bug that caused infinite loop if input FASTA alignment was incorrect and
+  primer4clades could not generate primers for.
+
 0.1.0 (2015-10-22)
 ++++++++++++++++++
 

@@ -194,7 +194,7 @@ class PrimerDesigner:
                     seq_record.id = this_id
                     seq_record.description = description
                     self.designed_primers.append(seq_record)
-                    i += 1
+                i += 1
 
     def request_primers(self, aln):
         url = "http://floresta.eead.csic.es/primers4clades/primers4clades.cgi"
