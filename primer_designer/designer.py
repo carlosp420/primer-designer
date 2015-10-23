@@ -115,7 +115,7 @@ class PrimerDesigner:
         self.clustype = clustype
         self.amptype = amptype
         self.email = email
-        self.designed_primers = []
+        self.report = ""
 
     def design_primers(self):
         if os.path.exists(self.folder):
@@ -176,7 +176,14 @@ class PrimerDesigner:
         with open("{0}.html".format(aln), "w") as handle:
             handle.write(response_body)
 
-        # Show primer pair to user
+        self.make_report_from_html_file(response_body, this_file)
+
+    def make_report_from_html_file(self, response_body, this_file):
+        """Processes the results from primer4clades (a html file).
+
+        Extracts the best possible primer pair (with highest quality and
+        longest amplicon).
+        """
         html_file = response_body.split("\n")
         i = 1
         while i < 4:
@@ -193,7 +200,7 @@ class PrimerDesigner:
                     seq_record = SeqRecord(seq)
                     seq_record.id = this_id
                     seq_record.description = description
-                    self.designed_primers.append(seq_record)
+                    self.report += seq_record
                 i += 1
 
     def request_primers(self, aln):
