@@ -199,8 +199,19 @@ class PrimerDesigner:
                             primer_pair_qualities, expected_pcr_product_lengths,
                             forward_temperatures, reverse_temperatures)
 
-        amplicon = self.choose_best_amplicon(amplicon_tuples)
-        print(amplicon)
+        best_amplicon = self.choose_best_amplicon(amplicon_tuples)
+        best_amplicon_formatted = ""
+        for idx, value in enumerate(best_amplicon):
+            if idx in [2, 3]:
+                best_amplicon_formatted += "\n\n{0}".format(value)
+            elif idx == 4:
+                best_amplicon_formatted += "\n\n# primer pair quality = {0}%".format(value)
+            elif idx == 5:
+                best_amplicon_formatted += "\n# expected PCR product length (nt) = {0}".format(value)
+            else:
+                best_amplicon_formatted += "\n{0}".format(value)
+
+        print(best_amplicon_formatted)
         self.report = ""
 
     def group_primers(self, my_list):
@@ -211,9 +222,9 @@ class PrimerDesigner:
             grouped_primers = my_list[i:i + n]
             forward_primer = grouped_primers[0].split(" ")
             reverse_primer = grouped_primers[1].split(" ")
-            formated_primers = ">F_{0}\n{1}".format(forward_primer[1], forward_primer[0])
-            formated_primers += "\n>R_{0}\n{1}".format(reverse_primer[1], reverse_primer[0])
-            new_list.append(formated_primers)
+            formatted_primers = ">F_{0}\n{1}".format(forward_primer[1], forward_primer[0])
+            formatted_primers += "\n>R_{0}\n{1}".format(reverse_primer[1], reverse_primer[0])
+            new_list.append(formatted_primers)
         return new_list
 
     def choose_best_amplicon(self, amplicon_tuples):
