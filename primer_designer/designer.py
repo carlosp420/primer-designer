@@ -3,8 +3,6 @@ import os
 import re
 
 import requests
-from Bio.Alphabet import IUPAC
-from Bio.Seq import Seq
 from Bio.SeqIO import SeqRecord
 from Bio import SeqIO
 
@@ -181,38 +179,52 @@ class PrimerDesigner:
     def make_report_from_html_file(self, response_body, this_file):
         """Processes the results from primer4clades (a html file).
 
-        Extracts the best possible primer pair (with highest quality and
-        longest amplicon).
+        Makes a report based on the best possible primer pair (with highest
+        quality and longest amplicon).
         """
-        html_file = response_body
-        import re
-        amplicons = re.findall("(## Amplicon.+)codon", html_file)
-        primers_codehop = self.group_primers(re.findall("(\w+ codeh)_corr.+\n", html_file))
-        primers_relaxed = self.group_primers(re.findall("(\w+ relax)_corr.+\n", html_file))
-        primers_degen = self.group_primers(re.findall("(\w+ degen)_corr.+\n", html_file))
-        primer_pair_qualities = re.findall("# primer pair.+= ([0-9]+)%\n", html_file)
-        expected_pcr_product_lengths = re.findall("# expected PCR .+= ([0-9]+)\n", html_file)
-        forward_temperatures = re.findall("(# fwd: minTm.+)\n", html_file)
-        reverse_temperatures = re.findall("(# rev: minTm.+)\n", html_file)
-
-        amplicon_tuples = zip(amplicons, primers_codehop, primers_relaxed, primers_degen,
-                            primer_pair_qualities, expected_pcr_product_lengths,
-                            forward_temperatures, reverse_temperatures)
+        amplicon_tuples = self.get_amplicon_data_as_tuples(response_body)
 
         best_amplicon = self.choose_best_amplicon(amplicon_tuples)
+
+        self.report += """\n\n\
+####################################################
+# Alignment {0}
+""".format(this_file)
+        self.report += self.format_amplicon(best_amplicon)
+
+    def get_amplicon_data_as_tuples(self, response_body):
+        amplicons = re.findall("(## Amplicon.+) codon", response_body)
+        primers_codehop = self.group_primers( re.findall("(\w+ codeh)_corr.+\n", response_body))
+        primers_relaxed = self.group_primers( re.findall("(\w+ relax)_corr.+\n", response_body))
+        primers_degen = self.group_primers( re.findall("(\w+ degen)_corr.+\n", response_body))
+        primer_pair_qualities = re.findall("# primer pair.+= ([0-9]+)%\n", response_body)
+        expected_pcr_product_lengths = re.findall( "# expected PCR .+= ([0-9]+)\n", response_body)
+        forward_temperatures = re.findall("(# fwd: minTm.+)\n", response_body)
+        reverse_temperatures = re.findall("(# rev: minTm.+)\n", response_body)
+
+        amplicon_tuples = zip(amplicons, primers_codehop, primers_relaxed,
+                              primers_degen,
+                              primer_pair_qualities,
+                              expected_pcr_product_lengths,
+                              forward_temperatures, reverse_temperatures)
+        return amplicon_tuples
+
+    def format_amplicon(self, best_amplicon):
         best_amplicon_formatted = ""
         for idx, value in enumerate(best_amplicon):
-            if idx in [2, 3]:
+            if idx == 0:
+                best_amplicon_formatted += "{0}".format(value).replace("##", "# Best")
+            elif idx in [2, 3]:
                 best_amplicon_formatted += "\n\n{0}".format(value)
             elif idx == 4:
-                best_amplicon_formatted += "\n\n# primer pair quality = {0}%".format(value)
+                best_amplicon_formatted += "\n\n# primer pair quality = {0}%".format(
+                    value)
             elif idx == 5:
-                best_amplicon_formatted += "\n# expected PCR product length (nt) = {0}".format(value)
+                best_amplicon_formatted += "\n# expected PCR product length (nt) = {0}".format(
+                    value)
             else:
                 best_amplicon_formatted += "\n{0}".format(value)
-
-        print(best_amplicon_formatted)
-        self.report = ""
+        return best_amplicon_formatted
 
     def group_primers(self, my_list):
         """Group elements in list by certain number 'n'"""

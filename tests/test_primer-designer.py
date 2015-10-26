@@ -25,6 +25,7 @@ class PrimerDesignerTest(unittest.TestCase):
             amptype="dna_GTRG",
             email="youremail@email.com",
         )
+        self.maxDiff = None
 
     def tearDown(self):
         output_html_file = '{0}.html'.format(ALIGNMENT)
@@ -45,10 +46,32 @@ class PrimerDesignerTest(unittest.TestCase):
         resp = self.pd.request_primers(ALIGNMENT)
         assert resp.content.decode('ascii') == response_html_body
 
-    def test_process_response(self):
+    def test_report_from_html_response(self):
+        expected = """\n\n\
+####################################################
+# Alignment Ca2.fst
+# Best Amplicon 4
+>F_codeh
+GACCTGAAAGAAGAACTGggvaargghgc
+>R_codeh
+CCAGGTGTACCAGCGaadccraacca
+
+>F_relax
+GACCTGAAAGAAGAACTGggvaargghgc
+>R_relax
+CCAGGTGTACCAgcraadccraacca
+
+>F_degen
+gahytdaargaagaaytdggvaargghgc
+>R_degen
+ccnggdgtdccdgcraadccraacca
+
+# primer pair quality = 80%
+# expected PCR product length (nt) = 471
+# fwd: minTm = 62.0 maxTm = 67.5
+# rev: minTm = 65.5 maxTm = 68.8"""
         self.pd.process_response(ALIGNMENT, open(RESPONSE).read())
-        self.assertEqual('gayaaytaygahytdaargaagaaytdggvaargghgc',
-                         self.pd.report)
+        self.assertEqual(expected, self.pd.report)
 
     def test_inserting_taxon_in_fasta_seq_descriptions(self):
         self.pd.taxon_for_codon_usage = 'Bombyx mori'
