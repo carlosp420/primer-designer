@@ -184,24 +184,53 @@ class PrimerDesigner:
         Extracts the best possible primer pair (with highest quality and
         longest amplicon).
         """
-        html_file = response_body.split("\n")
-        i = 1
-        while i < 4:
-            for line in html_file:
-                if "degen_corr" in line:
-                    seq = line.split(" ")[0].strip()
+        html_file = response_body
+        import re
+        amplicons = re.findall("(## Amplicon.+)codon", html_file)
+        primers_codehop = self.group_primers(re.findall("(\w+ codeh)_corr.+\n", html_file))
+        primers_relaxed = self.group_primers(re.findall("(\w+ relax)_corr.+\n", html_file))
+        primers_degen = self.group_primers(re.findall("(\w+ degen)_corr.+\n", html_file))
+        primer_pair_qualities = re.findall("# primer pair.+= ([0-9]+)%\n", html_file)
+        expected_pcr_product_lengths = re.findall("# expected PCR .+= ([0-9]+)\n", html_file)
+        forward_temperatures = re.findall("(# fwd: minTm.+)\n", html_file)
+        reverse_temperatures = re.findall("(# rev: minTm.+)\n", html_file)
 
-                    description = line.split(" ")[2].strip()
+        amplicon_tuples = zip(amplicons, primers_codehop, primers_relaxed, primers_degen,
+                            primer_pair_qualities, expected_pcr_product_lengths,
+                            forward_temperatures, reverse_temperatures)
 
-                    this_id = this_file + "_" + line.split(" ")[1].strip()
-                    this_id += "_" + str(i)
+        amplicon = self.choose_best_amplicon(amplicon_tuples)
+        print(amplicon)
+        self.report = ""
 
-                    seq = Seq(seq, IUPAC.ambiguous_dna)
-                    seq_record = SeqRecord(seq)
-                    seq_record.id = this_id
-                    seq_record.description = description
-                    self.report += seq_record
-                i += 1
+    def group_primers(self, my_list):
+        """Group elements in list by certain number 'n'"""
+        new_list = []
+        n = 2
+        for i in range(0, len(my_list), n):
+            grouped_primers = my_list[i:i + n]
+            forward_primer = grouped_primers[0].split(" ")
+            reverse_primer = grouped_primers[1].split(" ")
+            formated_primers = ">F_{0}\n{1}".format(forward_primer[1], forward_primer[0])
+            formated_primers += "\n>R_{0}\n{1}".format(reverse_primer[1], reverse_primer[0])
+            new_list.append(formated_primers)
+        return new_list
+
+    def choose_best_amplicon(self, amplicon_tuples):
+        """Iterates over amplicon tuples and returns the one with highest quality
+        and amplicon length.
+        """
+        quality = 0
+        amplicon_length = 0
+        best_amplicon = None
+
+        for amplicon in amplicon_tuples:
+            if int(amplicon[4]) >= quality and int(amplicon[5]) >= amplicon_length:
+                quality = int(amplicon[4])
+                amplicon_length = int(amplicon[5])
+                best_amplicon = amplicon
+
+        return best_amplicon
 
     def request_primers(self, aln):
         url = "http://floresta.eead.csic.es/primers4clades/primers4clades.cgi"

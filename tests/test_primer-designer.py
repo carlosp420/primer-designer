@@ -47,8 +47,8 @@ class PrimerDesignerTest(unittest.TestCase):
 
     def test_process_response(self):
         self.pd.process_response(ALIGNMENT, open(RESPONSE).read())
-        self.assertTrue('gayaaytaygahytdaargaagaaytdggvaargghgc' in
-                        [str(seq.seq) for seq in self.pd.designed_primers])
+        self.assertEqual('gayaaytaygahytdaargaagaaytdggvaargghgc',
+                         self.pd.report)
 
     def test_inserting_taxon_in_fasta_seq_descriptions(self):
         self.pd.taxon_for_codon_usage = 'Bombyx mori'
