@@ -207,11 +207,11 @@ class PrimerDesigner:
 
     def get_amplicon_data_as_tuples(self, response_body):
         amplicons = re.findall("(## Amplicon.+) codon", response_body)
-        primers_codehop = self.group_primers( re.findall("(\w+ codeh)_corr.+\n", response_body))
-        primers_relaxed = self.group_primers( re.findall("(\w+ relax)_corr.+\n", response_body))
-        primers_degen = self.group_primers( re.findall("(\w+ degen)_corr.+\n", response_body))
+        primers_codehop = self.group_primers(re.findall("(\w+ codeh)_corr.+\n", response_body))
+        primers_relaxed = self.group_primers(re.findall("(\w+ relax)_corr.+\n", response_body))
+        primers_degen = self.group_primers(re.findall("(\w+ degen)_corr.+\n", response_body))
         primer_pair_qualities = re.findall("# primer pair.+= ([0-9]+)%\n", response_body)
-        expected_pcr_product_lengths = re.findall( "# expected PCR .+= ([0-9]+)\n", response_body)
+        expected_pcr_product_lengths = re.findall("# expected PCR .+= ([0-9]+)\n", response_body)
         forward_temperatures = re.findall("(# fwd: minTm.+)\n", response_body)
         reverse_temperatures = re.findall("(# rev: minTm.+)\n", response_body)
 
