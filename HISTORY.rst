@@ -1,6 +1,13 @@
 Release History
 ---------------
 
+0.2.0 (2015-10-27)
+++++++++++++++++++
+
+- After all FASTA alignments are processed, a report will be produced with the
+  codehop, relaxed and degen primers for the best amplicon (higher quality and
+  longer expeced sequence).
+
 0.1.1 (2015-10-23)
 ++++++++++++++++++
 
