@@ -19,7 +19,7 @@ def read(*names, **kwargs):
 
 setup(
     name='primer_designer',
-    version='0.1.1',
+    version='0.2.0',
     license='BSD',
     description='Primer designer',
     long_description='%s\n%s' % (read('README.rst'), re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('HISTORY.rst'))),
