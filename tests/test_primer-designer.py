@@ -26,12 +26,23 @@ class PrimerDesignerTest(unittest.TestCase):
             amptype="dna_GTRG",
             email="youremail@email.com",
         )
+        self.tmp_folder= os.path.join(TEST_FOLDER, '..', 'tmp_folder')
+        if not os.path.isdir(self.tmp_folder):
+            os.mkdir(self.tmp_folder)
         self.maxDiff = None
 
     def tearDown(self):
         output_html_file = '{0}.html'.format(ALIGNMENT)
         if os.path.isfile(output_html_file):
             os.remove(output_html_file)
+
+        if os.path.isfile(self.tmp_folder):
+            os.remove(self.tmp_folder)
+
+    def test_design_primers_from_empty_folder(self):
+        pd = copy.copy(self.pd)
+        pd.folder = self.tmp_folder
+        self.assertRaises(AttributeError, pd.design_primers)
 
     def test_get_alignments(self):
         result = self.pd.get_alignments()
@@ -40,7 +51,7 @@ class PrimerDesignerTest(unittest.TestCase):
     def test_get_alignments_error(self):
         pd = copy.copy(self.pd)
         pd.folder = "fake_folder"
-        self.assertRaises(pd.get_alignments)
+        self.assertRaises(AttributeError, pd.get_alignments)
 
     @responses.activate
     def test_request_primers(self):

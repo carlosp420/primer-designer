@@ -1,7 +1,6 @@
 import glob
 import os
 import re
-import sys
 
 import requests
 from Bio.SeqIO import SeqRecord
@@ -129,8 +128,8 @@ class PrimerDesigner:
             print("\nDone.\nAll primers have been saved in the file \"primers_report.txt\"")
             return self.report
         else:
-            print("\nError! the folder {0} is empty.\n".format(self.folder))
-            sys.exit(1)
+            msg = "\nError! the folder {0} is empty.\n".format(self.folder)
+            raise AttributeError(msg)
 
     def call_primer4clades_for_primers(self, alns):
         for aln in alns:
