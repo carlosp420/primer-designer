@@ -133,9 +133,11 @@ class PrimerDesigner:
                         self.process_response(aln, r.text)
 
                 # Write primers to alignment file
-                SeqIO.write(self.designed_primers, "primers.fasta", "fasta")
-                print("\nDone.\nAll primers have been saved in the file \"primers.fasta\"")
-                return self.designed_primers
+                with open("primers_report.txt", "a") as handle:
+                    handle.write(self.report)
+
+                print("\nDone.\nAll primers have been saved in the file \"primers_report.txt\"")
+                return self.report
             else:
                 print("\nError! the folder {0} is empty.\n".format(self.folder))
         else:
@@ -186,11 +188,12 @@ class PrimerDesigner:
 
         best_amplicon = self.choose_best_amplicon(amplicon_tuples)
 
-        self.report += """\n\n\
+        if best_amplicon is not None:
+            self.report += """\n\n\
 ####################################################
 # Alignment {0}
 """.format(this_file)
-        self.report += self.format_amplicon(best_amplicon)
+            self.report += self.format_amplicon(best_amplicon)
 
     def get_amplicon_data_as_tuples(self, response_body):
         amplicons = re.findall("(## Amplicon.+) codon", response_body)
