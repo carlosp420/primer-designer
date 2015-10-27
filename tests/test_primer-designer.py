@@ -1,3 +1,4 @@
+import copy
 import os
 import unittest
 
@@ -31,6 +32,15 @@ class PrimerDesignerTest(unittest.TestCase):
         output_html_file = '{0}.html'.format(ALIGNMENT)
         if os.path.isfile(output_html_file):
             os.remove(output_html_file)
+
+    def test_get_alignments(self):
+        result = self.pd.get_alignments()
+        self.assertTrue(len(result) > 0)
+
+    def test_get_alignments_error(self):
+        pd = copy.copy(self.pd)
+        pd.folder = "fake_folder"
+        self.assertRaises(pd.get_alignments)
 
     @responses.activate
     def test_request_primers(self):

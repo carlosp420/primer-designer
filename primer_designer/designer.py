@@ -1,6 +1,7 @@
 import glob
 import os
 import re
+import sys
 
 import requests
 from Bio.SeqIO import SeqRecord
@@ -116,32 +117,41 @@ class PrimerDesigner:
         self.report = ""
 
     def design_primers(self):
+        alns = self.get_alignments()
+
+        if alns:
+            self.call_primer4clades_for_primers(alns)
+
+            # Write primers to alignment file
+            with open("primers_report.txt", "a") as handle:
+                handle.write(self.report)
+
+            print("\nDone.\nAll primers have been saved in the file \"primers_report.txt\"")
+            return self.report
+        else:
+            print("\nError! the folder {0} is empty.\n".format(self.folder))
+            sys.exit(1)
+
+    def call_primer4clades_for_primers(self, alns):
+        for aln in alns:
+            if is_fasta(aln):
+
+                if self.taxon_for_codon_usage:
+                    aln = self.insert_taxon_in_new_fasta_file(aln)
+
+                print("\nProcessing file \"{0}\"".format(aln))
+
+                r = self.request_primers(aln)
+                self.process_response(aln, r.text)
+
+    def get_alignments(self):
         if os.path.exists(self.folder):
             all_files = os.path.join(self.folder, "*")
             alns = glob.glob(all_files)
-
-            if alns:
-                for aln in alns:
-                    if is_fasta(aln):
-
-                        if self.taxon_for_codon_usage:
-                            aln = self.insert_taxon_in_new_fasta_file(aln)
-
-                        print("\nProcessing file \"{0}\"".format(aln))
-
-                        r = self.request_primers(aln)
-                        self.process_response(aln, r.text)
-
-                # Write primers to alignment file
-                with open("primers_report.txt", "a") as handle:
-                    handle.write(self.report)
-
-                print("\nDone.\nAll primers have been saved in the file \"primers_report.txt\"")
-                return self.report
-            else:
-                print("\nError! the folder {0} is empty.\n".format(self.folder))
         else:
-            print("\nError! the folder {0} does not exist.\n".format(self.folder))
+            msg = "\nError! the folder {0} does not exist.\n".format(self.folder)
+            raise AttributeError(msg)
+        return alns
 
     def insert_taxon_in_new_fasta_file(self, aln):
         """primer4clades infers the codon usage table from the taxon names in the
